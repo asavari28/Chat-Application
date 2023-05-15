@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <div class="chat-container">
+    <header class="chat-header">
+        <h1>Worqhat Chat</h1>
+        <a href="index.html" class="btn">Close</a>
+        <div><a href="index-chat.html" class="btn">Group Chat</a> </div>                        
+      </header> 
+    <div id="user-list-container" style="display: none;">
+      <p>Online Users:</p>
+      <ul id="user-list"></ul>
+    </div> 
+    <div id="message-container"></div>
+    <div class="chat-form-container">
+    <form id="send-container">
+        <input class="message-placeholder" id="message-input" type="text" placeholder="Type your message">
+        <button type="submit" class="btn"><i class="fas fa-paper-plane"></i> Send</button>
+    </form>
+    </div>
+  </div>
+  <!-- <div class="chat-container">
+    <header class="chat-header">
+      <h1>Worqhat Chat</h1>
+      <div><a href="index-chat.html" class="btn1">Group Chat</a> </div>                        
+    </header>
+    <main class="chat-main">
+      <div class="chat-sidebar">
+        <div id="user-list-container" class="online-user">
+            <p>Online Users:</p>
+            <ul id="user-list"></ul>
+          </div>
+      </div>
+      <div class="chat-messages1" id="message-container"></div>
+    </main>
+    <div class="chat-form-container">
+      <form id="send-container">
+        <input id="message-input" type="text" placeholder="Enter Message" required autocomplete="off">
+        <button type="submit" class="btn"><i class="fas fa-paper-plane"></i> Send</button>
+      </form>
+    </div>
+  </div> -->
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="js/chat.js"></script>
+</body>
+</html>

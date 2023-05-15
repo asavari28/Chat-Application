@@ -1,0 +1,201 @@
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  <!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="css/style.css" />
+  <title>Private Chat App</title>
+  <style>
+    body {
+    font-family: Arial, sans-serif;
+    background-color: #f5f5f5;
+    margin: 0;
+    padding: 0;
+  }
+  
+  #chat-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+  }
+  
+  input,
+  button {
+    font-size: 1em;
+    padding: 0.5em;
+  }
+  
+  #name-input {
+    width: 80%;
+    max-width: 400px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    outline: none;
+    margin-bottom: 1em;
+  }
+  
+  #user-list-container {
+    margin-bottom: 1em;
+  }
+  
+  #user-list {
+    list-style-type: none;
+    padding: 0;
+  }
+  
+  #user-list li {
+    background-color: #fff;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: 0.5em;
+    margin-bottom: 0.5em;
+    cursor: pointer;
+  }
+  
+  #user-list li:hover {
+    background-color: #eee;
+  }
+  
+  #message-container {
+    width: 80%;
+    max-width: 600px;
+    height: 400px;
+    background-color: #fff;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: 1em;
+    overflow-y: auto;
+    margin-bottom: 1em;
+  }
+  
+  #send-container {
+    display: flex;
+    width: 80%;
+    max-width: 600px;
+    align-items: center;
+  }
+  
+  #message-input {
+    flex-grow: 1;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    outline: none;
+    padding-right: 0.5em;
+  }
+  
+  button {
+    background-color: #4CAF50;
+    border: none;
+    border-radius: 5px;
+    color: white;
+    cursor: pointer;
+    margin-left: 0.5em;
+  }
+  
+  button:hover {
+    background-color: #45a049;
+  }
+
+  .received {
+    background-color: #e5e5e5;
+    padding: 8px;
+    margin-bottom: 8px;
+    border-radius: 8px;
+    width: fit-content;
+  }
+  
+  .sent {
+    background-color: #4caf50;
+    color: #ffffff;
+    padding: 8px;
+    margin-bottom: 8px;
+    border-radius: 8px;
+    width: fit-content;
+    align-self: flex-end;
+  }
+  </style>
+</head>
+<body>
+  <div id="chat-container">
+    <div id="message-container"></div>
+    <form id="send-container">
+      <input id="message-input" type="text" placeholder="Type your message">
+      <button type="submit">Send</button>
+    </form>
+  </div>
+  <script src="/socket.io/socket.io.js"></script>
+  <script>
+    const socket = io();
+    const messageContainer = document.getElementById('message-container');
+    const messageForm = document.getElementById('send-container');
+    const messageInput = document.getElementById('message-input');
+    const nameInput = document.getElementById('name-input');
+    const userListContainer = document.getElementById('user-list-container');
+    const userList = document.getElementById('user-list');
+    
+    // nameInput.addEventListener('keypress', (e) => {
+    //   if (e.key === 'Enter') {
+    //     const name = nameInput.value;
+    //     socket.emit('new-user', name);
+    //     nameInput.style.display = 'none';
+    //     userListContainer.style.display = 'block';
+    //   }
+    // });
+
+    socket.on('user-list', (users) => {
+      userList.innerHTML = '';
+      users.forEach(user => {
+        if (user.name !== nameInput.value) {
+          const userElement = document.createElement('li');
+          userElement.innerText = user.name;
+          userElement.addEventListener('click', () => {
+            socket.emit('select-recipient', user.id);
+            messageForm.style.display = 'block';
+            userListContainer.style.display = 'none';
+          });
+          userList.append(userElement);
+        }
+      });
+    });
+
+    socket.on('selected-recipient', (recipient) => {
+  appendMessage(`You are now chatting with ${recipient.name}`);
+});
+
+    socket.on('chat-message', (data) => {
+      appendMessage(`${data.name}: ${data.message}`);
+    });
+
+    messageForm.addEventListener('submit', (e) => {
+  e.preventDefault();
+  const message = messageInput.value;
+  socket.emit('send-chat-message', message);
+  messageInput.value = '';
+  appendMessage(message, 'sent');
+});
+
+    function appendMessage(message, sender = 'received') {
+  const messageElement = document.createElement('div');
+  messageElement.innerText = message;
+  messageElement.classList.add(sender);
+  messageContainer.append(messageElement);
+  messageContainer.scrollTop = messageContainer.scrollHeight;
+}
+
+  </script>
+
+</body>
+</html>
+
+</body>
+</html>
